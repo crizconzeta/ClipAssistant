@@ -51,7 +51,7 @@ Puedes utilizar cualquier modelo que tu computador sea capaz de correr.
 Gamma2:2b o Qwen2:1.5b para texto, si vas a realizar tareas simples, y toleras que tu asistente sea un poco vago y no responda de forma perfecta el 100% de las veces. 
 Gemma2:9b o Llam13.1:8b si tienes un computador con suficiente VRAM y quieres realizar tareas más complejas. 
 
-**Imagenes (vision)**Imagenes (vision) 
+**Imagenes (vision)**
 
 llava-llama3:latest puede responder en Español. 
 Moondream funciona muy bien, pero siempre responde en inglés. 
