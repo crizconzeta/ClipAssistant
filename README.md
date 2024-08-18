@@ -35,12 +35,22 @@ Esta sección te ayudará a instalar y configurar Ollama para que puedas usar **
     cd clipassistant
     ```
 
-3. Instala las dependencias necesarias:
+3. Crea un venv
+    ```bash
+    cd  python -m venv env  
+    ```
+
+4. Activa el venv
+    ```bash
+    source env/bin/activate
+    ```
+
+5. Instala las dependencias necesarias:
     ```bash
     pip install -r requirements.txt
     ```
 
-4. Modifica un archivo de configuración `config.yaml` siguiendo el ejemplo proporcionado en el repositorio.
+6. Modifica un archivo de configuración `config.yaml` siguiendo el ejemplo proporcionado en el repositorio.
 
 Asegúrate de reemplazar los valores de `text_model` y `vision_model` con los modelos específicos que tengas instalados en tu computador.
 
