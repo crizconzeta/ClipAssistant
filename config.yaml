@@ -1,0 +1,106 @@
+ollama:
+  endpoint: "http://localhost:11434/api/"
+  #text_model: "qwen2:1.5b" 
+  text_model: "gemma2:2b" 
+  # Prefiero Gemma2B por sobre qwen2:1.5B 
+  # pero es más por gusto que una comparación exahustiva 
+  #vision_model: "llava-llama3:latest" 
+  # Utiliza llava-llama3, si tu equipo lo puede correr sin problemas 
+  vision_model: "moondream:latest" 
+  # Moondream funciona bien, pero es incapaz de responder en español. 
+  keep_alive: "13m"
+  stream: false
+
+prompts:  
+  arreglar_texto:
+    shortcut: "1"
+    type: "text"
+    template: |
+      **Arregla el texto, no cambies el tiempo verbal:**
+      $text
+      **Entrega solo el texto correcto, siempre en el mismo idioma. Si hay palabras en otro idioma, mantenlas sin modificarlas. Entrega solo el texto sin indicaciones adicionales, no agregues detalles. 
+      Corrige los errores de tipeo por las palabras correctas. Corrige las palabras mal escritas, o donde una letras está en lugar de otra por error de tipografico. 
+      **
+
+  mejorar_texto:
+    shortcut: "2"
+    type: "text"
+    template: |
+      **Mejora el siguiente texto para que sea más profesional, y formal.**
+      $text
+      **Entrega solo el texto.**
+
+  resumir_texto:
+    shortcut: "3"
+    type: "text"
+    template: |
+      Resume el siguiente texto en 3 frases:
+      $text
+      **Devuelve solo el texto resumido.**
+
+  responder_email:
+    shortcut: "4"
+    type: "text"
+    template: |
+      **Escribe una respuesta formal para el siguiente email**
+      $text
+
+  traducir_texto:
+    shortcut: "5"
+    type: "text"
+    template: |
+      Traduce el siguiente texto al ${idioma}:
+      $text
+      Devuelve solo el texto traducido.
+
+  aperturar_tareas:
+    shortcut: "6"
+    type: "text"
+    template: |
+      Toma la siguiente tarea, y reducela en una lista de tareas más pequeñas 
+      $text
+      **Entrega la respuesta en formato de lista.**
+      Indica el tamaño de la tareas según la siguiente escala:
+      S: <= 30 minutos
+      M: 30 a 90 minutos
+      L: >= 90 minutos <= 4 horas
+      Si una tarea se estima en mayor de L, reducela en tareas más pequeñas.
+
+  generar_ideas:
+    shortcut: "7"
+    type: "text"
+    template: |
+      Genera 3 ideas relacionadas con el siguiente texto:
+      $text
+      Presenta las ideas en forma de lista numerada.
+
+  cambiar_tono:
+    shortcut: "8"
+    type: "text"
+    template: |
+      Cambia el tono del siguiente texto a ${tono}:
+      $text
+      Devuelve solo el texto con el nuevo tono.
+
+  explicar_conceptos:
+    shortcut: "9"
+    type: "text"
+    template: |
+      Explica los conceptos o términos complejos en el siguiente texto:
+      $text
+      Proporciona explicaciones breves para cada concepto identificado. Solo responde con las explicaciones. No agregues comentarios adicionales.
+
+  funcion_python:
+    shortcut: "|"
+    type: "text"
+    template: |
+      Actúa como un experto en Python. Crea un snippet que realice la siguiente tarea:
+      $text
+      No incluyas ninguna etiqueta de código ni comentarios adicionales. Responde solo con el código Python, sin formato de código ni explicación. Devuelve solo el código limpio.
+
+  describir_imagen:
+    shortcut: "i"
+    type: "vision"
+    template: |
+      Describe detalladamente la imagen. 
+      **Responde en español.**
