@@ -23,6 +23,10 @@ Esta sección te ayudará a instalar y configurar Ollama para que puedas usar **
 - Python 3.6 o superior
 - Configuración de la API de Ollama
 
+## Resumen
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/GmYn5_h9_do/0.jpg)](https://youtu.be/GwYn5_h9_do?feature=shared)
+
+
 ## Instalación
 
 1. Clona este repositorio:
