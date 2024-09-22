@@ -39,7 +39,8 @@ def process_text(text, accion, **kwargs):
     response = ollama.generate(
         model=TEXT_MODEL,
         prompt=prompt,
-        **OLLAMA_CONFIG
+        **OLLAMA_CONFIG,
+        options={'temperature':0.1}
     )
 
     if 'error' in response:
