@@ -20,7 +20,7 @@ Esta sección te ayudará a instalar y configurar Ollama para que puedas usar **
 
 ## Requisitos
 
-- Python 3.6 o superior
+- Python 3.9 o superior
 - Configuración de la API de Ollama
 
 ## Explicación en Youtube
@@ -41,7 +41,7 @@ Esta sección te ayudará a instalar y configurar Ollama para que puedas usar **
 
 3. Crea un venv
     ```bash
-    cd  python -m venv env  
+    python -m venv env  
     ```
 
 4. Activa el venv
