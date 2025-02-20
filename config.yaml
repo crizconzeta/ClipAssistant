@@ -1,7 +1,7 @@
 ollama:
   endpoint: "http://localhost:11434/api/"
   #text_model: "qwen2:1.5b" 
-  text_model: "gemma2:2b" 
+  text_model: "llama3.2:3b" 
   # Prefiero Gemma2B por sobre qwen2:1.5B 
   # pero es más por gusto que una comparación exahustiva 
   #vision_model: "llava-llama3:latest" 
@@ -19,7 +19,8 @@ prompts:
       **Arregla el texto, no cambies el tiempo verbal:**
       $text
       **Entrega solo el texto correcto, siempre en el mismo idioma. Si hay palabras en otro idioma, mantenlas sin modificarlas. Entrega solo el texto sin indicaciones adicionales, no agregues detalles. 
-      Corrige los errores de tipeo por las palabras correctas. Corrige las palabras mal escritas, o donde una letras está en lugar de otra por error de tipografico. 
+      Corrige los errores de tipeo por las palabras correctas. Corrige las palabras mal escritas, o donde una letras está en lugar de otra por error de tipografico.
+      Asegurate de que el texto que estes entregando, tenga sentido. 
       **
 
   mejorar_texto:
