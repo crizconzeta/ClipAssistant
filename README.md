@@ -1,74 +1,127 @@
 # ClipAssistant
-Asistente liaviano que vive en la consola y se comunica con el portapapeles. Utiliza Ollama. 
+
+## Un asistente liviano que vive en tu consola y te ayuda con el texto del portapapeles usando IA local
+
+[![Demostración en Youtube](https://img.youtube.com/vi/GwYn5_h9_do/0.jpg)](https://youtu.be/GwYn5_h9_do?feature=shared)
+
 ---
 
-## Instalación de Ollama
+## Why?
 
-**ClipAssistant** utiliza la API de Ollama para procesamiento de texto e imágenes. A continuación, te explicamos cómo instalar y configurar Ollama:
+Vivimos en un mundo de constante comunicación escrita. Para algunos, esto presenta desafíos únicos: dificultades para recordar palabras, errores frecuentes al teclear debido a la coordinación ojo-mano, o simplemente una carga cognitiva alta al tener que corregir y refinar textos constantemente. Además, existe una creciente preocupación por la privacidad y la dependencia de servicios en la nube que procesan nuestros datos.
 
-1. Visita [el sitio web de Ollama](https://ollama.com).
-2. Sigue las instrucciones para instalar en tu computador.
-Esta sección te ayudará a instalar y configurar Ollama para que puedas usar **ClipAssistant** de manera efectiva. Si tienes más preguntas sobre la instalación o configuración, no dudes en consultarlas.
+**ClipAssistant nace de la necesidad de una herramienta:**
 
+- **Local y Privada:** Que no envíe tus textos sensibles a servidores de terceros. Todo el procesamiento de IA se realiza en tu propia máquina usando Ollama.
+- **Liviana y Rápida:** Que se ejecute en segundo plano sin consumir excesivos recursos y responda rápidamente.
+- **Simple y Efectiva:** Que se enfoque en tareas comunes de manipulación de texto para reducir la carga cognitiva y agilizar el flujo de trabajo.
 
-## Características
+## How?
 
-- **Procesamiento de Texto**: Utiliza modelos de IA para limpiar, traducir, o ajustar el tono del texto copiado al portapapeles.
-- **Procesamiento de Imágenes**: Extrae imágenes del portapapeles, las convierte a formato base64 y las procesa con modelos de visión por computadora.
-- **Atajos de Teclado Personalizables**: Configura combinaciones de teclas para ejecutar diferentes acciones de manera rápida.
-- **Integración con Modelos de IA**: Utiliza la API de Ollama para generar respuestas basadas en el texto y las imágenes.
+Aprovechando conocimientos de programación en Python y la flexibilidad de los modelos de lenguaje grandes (LLMs) locales, ClipAssistant:
+
+1. **Escucha atajos de teclado** globales definidos por el usuario.
+2. **Interactúa con el portapapeles** del sistema para copiar el texto seleccionado.
+3. **Se comunica con un servicio local de Ollama** para enviar el texto a un modelo de IA (previamente descargado) junto con instrucciones específicas (prompts).
+4. **Recibe la respuesta** procesada del modelo.
+5. **Reemplaza el contenido del portapapeles** y automáticamente pega el texto resultante.
+
+## What?
+
+**ClipAssistant** es el resultado: una utilidad de línea de comandos (que se ejecuta en segundo plano) que te permite aplicar transformaciones de IA a cualquier texto que puedas copiar al portapapeles, simplemente usando un atajo de teclado.
+
+---
+
+## Características Principales
+
+- **Procesamiento de Texto Local:** Corrige, mejora, traduce, resume o cambia el tono del texto usando modelos de IA que se ejecutan en tu máquina vía Ollama.
+- **Activación por Atajos de Teclado:** Define combinaciones de teclas (ej. `Ctrl + 1`, `Ctrl + 2`) para invocar diferentes acciones sobre el texto seleccionado.
+- **Configuración Flexible:** Personaliza los modelos de IA, los prompts y los atajos a través de un archivo `config.yaml` simple.
+- **Enfoque en la Privacidad:** Tus datos del portapapeles nunca abandonan tu computadora durante el procesamiento de IA.
+- **Liviano:** Diseñado para tener un bajo impacto en los recursos del sistema.
+- _(Funcionalidad de Imágenes Deshabilitada Temporalmente): La capacidad de describir imágenes fue pausada debido a desafíos de compatibilidad multiplataforma con el portapapeles._
 
 ## Requisitos
 
-- Python 3.9 o superior
-- Configuración de la API de Ollama
-
-## Explicación en Youtube
-[![YT](https://img.youtube.com/vi/GwYn5_h9_do/0.jpg)](https://youtu.be/GwYn5_h9_do?feature=shared)
-
+- **Python:** Versión 3.12 o superior recomendada.
+- **Ollama:** El servicio Ollama debe estar [instalado](https://ollama.com) y ejecutándose en tu máquina.
+- **Modelos de Ollama:** Debes haber descargado los modelos de IA que desees usar (ej. `ollama pull llama3.2:3b`).
+- **Dependencias de Python:** Las listadas en `requirements.txt` (se instalan con `pip`).
+- **Sistema Operativo:** Probado principalmente en **Linux**. Debería funcionar en **macOS** y **Windows** para las funciones de texto, pero puede requerir ajustes o tener comportamientos inesperados con los atajos de teclado o el portapapeles en esos sistemas. La eliminación de la función de imágenes mejora la probabilidad de compatibilidad.
 
 ## Instalación
 
-1. Clona este repositorio:
-    ```bash
-    git clone https://github.com/crizconzeta/clipassistant.git
-    ```
+1. **Clona el Repositorio:**
 
-2. Navega al directorio del proyecto:
-    ```bash
-    cd clipassistant
-    ```
+   ```bash
+   git clone https://github.com/crizconzeta/clipassistant.git
+   cd clipassistant
+   ```
 
-3. Crea un venv
-    ```bash
-    python -m venv env  
-    ```
+2. **Instala Ollama:** Si aún no lo tienes, visita [ollama.com](https://ollama.com) y sigue las instrucciones para tu sistema operativo.
 
-4. Activa el venv
-    ```bash
-    source env/bin/activate
-    ```
+3. **Descarga un Modelo de IA (Ejemplo):**
+   Abre tu terminal y ejecuta (elige un modelo adecuado para tu hardware):
 
-5. Instala las dependencias necesarias:
-    ```bash
-    pip install -r requirements.txt
-    ```
+   ```bash
+   ollama pull llama3.2:3b
+   ```
 
-6. Modifica un archivo de configuración `config.yaml` siguiendo el ejemplo proporcionado en el repositorio.
+   _Asegúrate de que Ollama esté corriendo._
 
-Asegúrate de reemplazar los valores de `text_model` y `vision_model` con los modelos específicos que tengas instalados en tu computador.
+4. **Crea y Activa un Entorno Virtual (Recomendado):**
 
-Puedes utilizar cualquier modelo que tu computador sea capaz de correr. 
+   ```bash
+   python -m venv env
+   source env/bin/activate  # En Linux/macOS
+   # o `.\env\Scripts\activate` en Windows (cmd/powershell)
+   ```
 
-**Texto**
+5. **Instala las Dependencias de Python:**
 
-Gamma2:2b o Qwen2:1.5b para texto, si vas a realizar tareas simples, y toleras que tu asistente sea un poco vago y no responda de forma perfecta el 100% de las veces. 
-Gemma2:9b o Llam13.1:8b si tienes un computador con suficiente VRAM y quieres realizar tareas más complejas. 
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-**Imagenes (vision)**
+## Configuración (`config.yaml`)
 
-llava-llama3:latest puede responder en Español. 
-Moondream funciona muy bien, pero siempre responde en inglés. 
+Antes de ejecutar, necesitas configurar `ClipAssistant`:
 
--------
-Esta documentación fue escrita con ClipAssistant 
+1. **Crea un archivo `config.yaml`** en el directorio raíz del proyecto. Puedes utilizar el archivo que viene por defecto.
+
+2. **Modifica `text_model`** para que coincida con el modelo que descargaste con Ollama.
+
+3. **Personaliza los `prompts`**:
+   - Añade, elimina o modifica acciones.
+   - Cambia los `shortcut` (la tecla que usarás con `Ctrl`).
+   - Ajusta las plantillas (`template`) para darle las instrucciones precisas al LLM. La variable `$text` será reemplazada por el contenido de tu portapapeles.
+
+## Uso
+
+1. **Asegúrate de que Ollama esté corriendo** en segundo plano.
+2. **Navega a la carpeta** donde clonaste `ClipAssistant` en tu terminal.
+3. **Activa tu entorno virtual** (ej. `source env/bin/activate`).
+4. **Ejecuta el script:**
+
+   ```bash
+   python main.py
+   ```
+
+   Verás un mensaje indicando que está escuchando atajos. La terminal permanecerá ocupada por el script.
+
+5. **¡Úsalo!**
+
+   - Selecciona cualquier texto en cualquier aplicación (navegador, editor, etc.).
+   - Presiona la combinación de teclas `Ctrl + [shortcut]` que definiste en `config.yaml` (ej. `Ctrl + 1` para arreglar texto, `Ctrl + 2` para mejorarlo, según el ejemplo anterior).
+   - Espera un momento mientras ClipAssistant contacta a Ollama.
+   - El texto seleccionado será reemplazado automáticamente por la respuesta procesada por el LLM.
+
+6. **Para detener ClipAssistant:** Vuelve a la terminal donde se está ejecutando y presiona `Ctrl + C`.
+
+## Contribuciones
+
+Las contribuciones son bienvenidas. Por favor, abre un _issue_ para discutir cambios importantes antes de crear un _pull request_.
+
+---
+
+_Esta documentación fue parcialmente escrita y refinada con la ayuda de ClipAssistant._

@@ -1,26 +1,26 @@
 ollama:
   endpoint: "http://localhost:11434/api/"
-  #text_model: "qwen2:1.5b" 
-  text_model: "llama3.2:3b" 
-  # Prefiero Gemma2B por sobre qwen2:1.5B 
-  # pero es más por gusto que una comparación exahustiva 
-  #vision_model: "llava-llama3:latest" 
-  # Utiliza llava-llama3, si tu equipo lo puede correr sin problemas 
-  vision_model: "moondream:latest" 
-  # Moondream funciona bien, pero es incapaz de responder en español. 
+  #text_model: "qwen2:1.5b"
+  text_model: "llama3.2:3b"
+  # Prefiero Gemma2B por sobre qwen2:1.5B
+  # pero es más por gusto que una comparación exahustiva
+  #vision_model: "llava-llama3:latest"
+  # Utiliza llava-llama3, si tu equipo lo puede correr sin problemas
+  vision_model: "moondream:latest"
+  # Moondream funciona bien, pero es incapaz de responder en español.
   keep_alive: "13m"
   stream: false
 
-prompts:  
+prompts:
   arreglar_texto:
     shortcut: "1"
     type: "text"
     template: |
       **Arregla el texto, no cambies el tiempo verbal:**
       $text
-      **Entrega solo el texto correcto, siempre en el mismo idioma. Si hay palabras en otro idioma, mantenlas sin modificarlas. Entrega solo el texto sin indicaciones adicionales, no agregues detalles. 
+      **Entrega solo el texto correcto, siempre en el mismo idioma. Si hay palabras en otro idioma, mantenlas sin modificarlas. Entrega solo el texto sin indicaciones adicionales, no agregues detalles.
       Corrige los errores de tipeo por las palabras correctas. Corrige las palabras mal escritas, o donde una letras está en lugar de otra por error de tipografico.
-      Asegurate de que el texto que estes entregando, tenga sentido. 
+      Asegurate de que el texto que estes entregando, tenga sentido.
       **
 
   mejorar_texto:
@@ -58,7 +58,7 @@ prompts:
     shortcut: "6"
     type: "text"
     template: |
-      Toma la siguiente tarea, y reducela en una lista de tareas más pequeñas 
+      Toma la siguiente tarea, y reducela en una lista de tareas más pequeñas
       $text
       **Entrega la respuesta en formato de lista.**
       Indica el tamaño de la tareas según la siguiente escala:
@@ -74,6 +74,7 @@ prompts:
       Genera 3 ideas relacionadas con el siguiente texto:
       $text
       Presenta las ideas en forma de lista numerada.
+      No agregues comentarios adicionales ni otros detalles.
 
   cambiar_tono:
     shortcut: "8"
@@ -103,5 +104,8 @@ prompts:
     shortcut: "i"
     type: "vision"
     template: |
-      Describe detalladamente la imagen. 
+      Describe detalladamente la imagen.
       **Responde en español.**
+
+app:
+  clipboard_delay: 0.25
