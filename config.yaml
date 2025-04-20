@@ -1,13 +1,9 @@
 ollama:
   endpoint: "http://localhost:11434/api/"
-  #text_model: "qwen2:1.5b"
+  # text_model: "qwen2:1.5b"
   text_model: "llama3.2:3b"
-  # Prefiero Gemma2B por sobre qwen2:1.5B
-  # pero es más por gusto que una comparación exahustiva
-  #vision_model: "llava-llama3:latest"
-  # Utiliza llava-llama3, si tu equipo lo puede correr sin problemas
   vision_model: "moondream:latest"
-  # Moondream funciona bien, pero es incapaz de responder en español.
+  # la funcionalidad de vision está desactivada por el momento
   keep_alive: "13m"
   stream: false
 
