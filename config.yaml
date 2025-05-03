@@ -88,6 +88,13 @@ prompts:
       $text
       Proporciona explicaciones breves para cada concepto identificado. Solo responde con las explicaciones. No agregues comentarios adicionales.
 
+  werner:
+    shortcut: "0"
+    type: "text"
+    template: |
+      Cambia el tono del siguiente texto, para que sea un monólogo corto al estilo de Werner Herzog. El tono debe ser sombrío, filosófico y existencial. El resultado debe sentirse como una voz en off de Herzog en un documental oscuro. No divagues ni añadas elementos innecesarios. Mantén la esencia del mensaje original, pero transfórmalo en algo profundo y reflexivo.
+      $text
+      Devuelve solo el texto con el nuevo tono. No añadas comillas ni introducciones, solo el texto transformado.
   funcion_python:
     shortcut: "|"
     type: "text"
