@@ -1,0 +1,41 @@
+[project]
+name = "clip-assistant"
+version = "2.0.0"
+description = "Un asistente liviano que vive en tu consola y te ayuda con el texto del portapapeles usando IA local"
+authors = [{ name = "crizconzeta"}]
+license = { text = "AGPLv3" }
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: Linux",
+]
+dependencies = [
+    "ollama>=0.5.1",
+    "pillow>=11.2.1",
+    "pydantic>=2.11.7",
+    "pynput>=1.8.1",
+    "pyperclip>=1.9.0",
+    "pyyaml>=6.0.2",
+]
+
+
+[project.scripts]
+clip-assistant = "clip_assistant.main:run"
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+]
+
+[tool.ruff]
+line-length = 127
+lint.select = ["E", "F", "B", "I", "N", "UP", "C4"]
+lint.ignore = ["G003", "G004"]
+exclude = [
+    ".bzr", ".direnv", ".eggs", ".git", ".git-rewrite", ".hg",
+    ".ipynb_checkpoints", ".mypy_cache", ".nox", ".pants.d",
+    ".pyenv", ".pytest_cache", ".pytype", ".ruff_cache", ".svn",
+    ".tox", ".venv", ".vscode", "__pypackages__", "_build",
+    "buck-out", "build", "dist", "node_modules", "site-packages", "venv"
+]
