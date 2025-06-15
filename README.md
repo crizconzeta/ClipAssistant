@@ -39,15 +39,15 @@ Aprovechando conocimientos de programación en Python y la flexibilidad de los m
 - **Configuración Flexible:** Personaliza los modelos de IA, los prompts y los atajos a través de un archivo `config.yaml` simple.
 - **Enfoque en la Privacidad:** Tus datos del portapapeles nunca abandonan tu computadora durante el procesamiento de IA.
 - **Liviano:** Diseñado para tener un bajo impacto en los recursos del sistema.
-- _(Funcionalidad de Imágenes Deshabilitada Temporalmente): La capacidad de describir imágenes fue pausada debido a desafíos de compatibilidad multiplataforma con el portapapeles._
 
 ## Requisitos
 
 - **Python:** Versión 3.12 o superior recomendada.
 - **Ollama:** El servicio Ollama debe estar [instalado](https://ollama.com) y ejecutándose en tu máquina.
 - **Modelos de Ollama:** Debes haber descargado los modelos de IA que desees usar (ej. `ollama pull llama3.2:3b`).
-- **Dependencias de Python:** Las listadas en `requirements.txt` (se instalan con `pip`).
-- **Sistema Operativo:** Probado principalmente en **Linux**. Debería funcionar en **macOS** y **Windows** para las funciones de texto, pero puede requerir ajustes o tener comportamientos inesperados con los atajos de teclado o el portapapeles en esos sistemas. La eliminación de la función de imágenes mejora la probabilidad de compatibilidad.
+- **Dependencias de Python:** Las listadas en `pyproject.toml` (se instalan con `uv/pip`).
+- **Sistema Operativo:** Probado principalmente en **Linux**.
+
 
 ## Instalación
 
@@ -69,19 +69,20 @@ Aprovechando conocimientos de programación en Python y la flexibilidad de los m
 
    _Asegúrate de que Ollama esté corriendo._
 
-4. **Crea y Activa un Entorno Virtual (Recomendado):**
+4. **Crea y Activa un Entorno Virtual:**
 
-   ```bash
-   python -m venv env
-   source env/bin/activate  # En Linux/macOS
-   # o `.\env\Scripts\activate` en Windows (cmd/powershell)
-   ```
+Sigue la sisntruccion de UV para crear un entorno virtual.
 
-5. **Instala las Dependencias de Python:**
+```bash
+uv venv
+source .venv/bin/activate
+```
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+Instala las dependencias:
+
+```bash
+uv pip install .
+```
 
 ## Configuración (`config.yaml`)
 
@@ -125,3 +126,4 @@ Las contribuciones son bienvenidas. Por favor, abre un _issue_ para discutir cam
 ---
 
 _Esta documentación fue parcialmente escrita y refinada con la ayuda de ClipAssistant._
+
