@@ -107,8 +107,8 @@ prompts:
     shortcut: "i"
     type: "vision"
     template: |
-      Describe detalladamente la imagen.
-      **Responde en español.**
+      You are an expert image analyst. Look at the following image carefully and provide a concise but detailed description of what you see.
+      Describe the main subject, the setting, any text present, and the overall style or mood of the image.
 
 app:
   clipboard_delay: 0.25

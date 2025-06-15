@@ -1,11 +1,13 @@
+import base64
 import io
 import logging
 import re
 import time
 from string import Template
 
+import httpx
 import pyperclip
-from PIL import Image, ImageGrab
+from PIL import Image, ImageGrab, UnidentifiedImageError
 from pynput.keyboard import Controller, Key, KeyCode, Listener
 
 from .config import Settings
@@ -24,18 +26,18 @@ class ClipAssistant:
             name: Template(details.template) for name, details in self.settings.prompts.items()
         }
         self.actions: dict[KeyCode, str] = self._initialize_actions()
-
-        # A brief, respectful pause.
         self.clipboard_delay = self.settings.app.clipboard_delay
 
     def _initialize_actions(self) -> dict[KeyCode, str]:
-        """Maps mortal keystrokes to divine actions"""
+        """Maps mortal keystrokes to machine actions"""
         action_map = {}
         for name, details in self.settings.prompts.items():
             try:
-                action_map[KeyCode.from_char(details.shortcut)] = name
+                if len(details.shortcut) == 1:
+                    action_map[KeyCode.from_char(details.shortcut)] = name
+                else:
+                    logging.warning("Complex shortcut '%s' not yet implemented", details.shortcut)
             except (ValueError, TypeError):
-                # Some shortcuts are just not meant to be.
                 logging.warning(
                     "Shortcut '%s' for action '%s' is weird. Ignoring it",
                     details.shortcut,
@@ -43,26 +45,84 @@ class ClipAssistant:
                 )
         return action_map
 
-    def _get_clipboard_content(self, content_type: str = "text"):
-        """A desperate grab for whatever is in the clipboard's soul"""
+    def _get_clipboard_image(self) -> bytes | None:
+        """A more desperate, multi-pronged attempt to grab an image from the clipboard"""
+        # Method 1: The direct approach with Pillow.
         try:
-            with self.controller.pressed(Key.ctrl):
-                self.controller.tap("c")
-            time.sleep(self.clipboard_delay)
-
-            if content_type == "text":
-                return pyperclip.paste() or None
-            if content_type == "image":
-                img = ImageGrab.grabclipboard()
-                if not isinstance(img, Image.Image):
-                    return None
+            img = ImageGrab.grabclipboard()
+            if isinstance(img, Image.Image):
+                logging.info("Image found via ImageGrab")
                 buffer = io.BytesIO()
                 img.save(buffer, format="PNG")
                 return buffer.getvalue()
-            return None
         except Exception as e:
-            # The clipboard is a fickle beast.
-            logging.error("Failed to commune with the clipboard: %s", e)
+            logging.warning("ImageGrab failed, as it often does on Linux. Reason: %s", e)
+
+        # Method 2: The textual approach. Maybe it's a path or a URL.
+        try:
+            raw_content = pyperclip.paste()
+            logging.debug("Raw clipboard content for image search: %s", repr(raw_content))
+            if not raw_content:
+                return None
+
+            clipboard_content = raw_content.strip()
+
+            if clipboard_content.startswith(("file://", "/")) and clipboard_content.lower().endswith(
+                (".png", ".jpg", ".jpeg", ".webp")
+            ):
+                path = clipboard_content.replace("file://", "")
+                logging.info("Clipboard contains a file path: %s", path)
+                with open(path, "rb") as f:
+                    img_bytes = f.read()
+                Image.open(io.BytesIO(img_bytes))  # Verify it's an image
+                return img_bytes
+
+            if clipboard_content.startswith(("http://", "https://")):
+                logging.info("Clipboard contains a URL, attempting to download: %s", clipboard_content)
+                with httpx.Client(timeout=10.0) as client:
+                    response = client.get(clipboard_content)
+                    response.raise_for_status()
+                Image.open(io.BytesIO(response.content))
+                return response.content
+
+        except (OSError, UnidentifiedImageError, httpx.RequestError) as e:
+            logging.warning("Clipboard content looked like a path/URL, but failed to load as image: %s", e)
+        except Exception as e:
+            logging.error("An unexpected existential crisis in _get_clipboard_image: %s", e)
+
+        return None
+
+    def _get_clipboard_content(self, content_type: str) -> str | bytes | None:
+        """
+        Grabs content from the clipboard, assuming the user has already copied it.
+        This function is the single entry point for getting clipboard data.
+        """
+        logging.debug("Attempting to fetch clipboard content of type '%s'", content_type)
+        try:
+            time.sleep(0.05)
+
+            if content_type == "text":
+                content = pyperclip.paste()
+                if content:
+                    logging.info("Text obtained from clipboard")
+                    return content
+                logging.warning("No text found in clipboard")
+                return None
+
+            if content_type == "vision":
+                logging.debug("Content type is 'vision', proceeding to image search")
+                image_bytes = self._get_clipboard_image()
+                if image_bytes:
+                    logging.info("Image bytes successfully captured")
+                    return image_bytes
+                logging.warning("No image found in clipboard after extensive searching")
+                return None
+
+            logging.error("Unsupported content type requested: '%s'", content_type)
+            return None
+
+        except Exception as e:
+            logging.error("A catastrophic failure occurred while communing with the clipboard: %s", e, exc_info=True)
             return None
 
     def _set_clipboard_text(self, text: str) -> None:
@@ -80,7 +140,7 @@ class ClipAssistant:
         """Strips the LLM's rambling preamble from a code block"""
         if match := re.search(r"```(?:\w+)?\s*(.*?)\s*```", response, re.DOTALL):
             return match.group(1).strip()
-        return response  # If there's no code block, we just return the raw, untamed text.
+        return response
 
     def _process_action(self, action_name: str) -> None:
         """The main dispatch logic. One function to rule them all"""
@@ -92,16 +152,21 @@ class ClipAssistant:
             logging.warning("Action cancelled. The clipboard was empty, like my soul")
             return
 
-        images = None
+        images_b64 = None
+        prompt_text = ""
+
         if action_config.type == "vision":
-            # The vision, it's... temporarily blind. Awaiting a miracle.
-            logging.warning("Vision processing is a dream for another day. Aborting")
-            return
-            # images = [base64.b64encode(content).decode("utf-8")]
-            # prompt_text = self.prompts[action_name].substitute()
-        else:
-            # TODO: A more elegant way to handle dynamic prompt args. For now, we brute-force it.
-            # This is where the sausage gets made.
+            if isinstance(content, bytes):
+                images_b64 = [base64.b64encode(content).decode("utf-8")]
+                prompt_text = self.prompts[action_name].substitute()
+                logging.info("Prepared image for Ollama (first 100 chars of base64): %s..", images_b64[0][:100])
+            else:
+                logging.error("Vision action triggered, but content is not bytes. This shouldn't happen")
+                return
+        else:  # text action
+            if not isinstance(content, str):
+                logging.error("Text action triggered, but content is not a string. This is weird")
+                return
             try:
                 if action_name == "traducir_texto":
                     prompt_text = self.prompts[action_name].substitute(text=content, idioma="inglés")
@@ -113,7 +178,7 @@ class ClipAssistant:
                 logging.error("Prompt for '%s' is missing a placeholder: %s", action_name, e)
                 return
 
-        response = call_ollama(prompt_text, self.settings.ollama, images=images)
+        response = call_ollama(prompt_text, self.settings.ollama, images=images_b64)
         if not response:
             logging.warning("Action '%s' yielded nothing. The void stares back", action_name)
             return
@@ -125,7 +190,7 @@ class ClipAssistant:
 
     def _on_press(self, key: Key | KeyCode | None) -> None:
         """Listens for the whispers of the keyboard"""
-        if isinstance(key, (Key, KeyCode)):
+        if isinstance(key, Key | KeyCode):
             self.current_keys.add(key)
 
         is_modifier_pressed = Key.ctrl in self.current_keys or Key.cmd in self.current_keys
@@ -150,5 +215,4 @@ class ClipAssistant:
         except Exception as e:
             logging.critical("The listener has fallen and it can't get up: %s", e)
         finally:
-            # Live with dignity, die like a pig.
             logging.info("ClipAssistant has ceased its watch")

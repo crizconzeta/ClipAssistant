@@ -1,3 +1,9 @@
+"""
+Clase Principal para la V2
+@author: crizconzeta
+@date: 2025-06-15
+"""
+
 import logging
 import sys
 from pathlib import Path

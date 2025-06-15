@@ -11,6 +11,7 @@ classifiers = [
     "Operating System :: Linux",
 ]
 dependencies = [
+    "httpx>=0.28.1",
     "ollama>=0.5.1",
     "pillow>=11.2.1",
     "pydantic>=2.11.7",

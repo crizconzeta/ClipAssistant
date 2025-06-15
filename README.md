@@ -125,3 +125,4 @@ Las contribuciones son bienvenidas. Por favor, abre un _issue_ para discutir cam
 ---
 
 _Esta documentación fue parcialmente escrita y refinada con la ayuda de ClipAssistant._
+

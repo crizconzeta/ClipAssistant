@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 import ollama
 
@@ -9,8 +8,8 @@ from .config import OllamaConfig
 def call_ollama(
     prompt: str,
     config: OllamaConfig,
-    images: Optional[list[str]] = None,
-) -> Optional[str]:
+    images: list[str] | None = None,
+) -> str | None:
     """Sends this poor soul's request into the digital void (Ollama)"""
     model = config.vision_model if images else config.text_model
     logging.info("Contacting the ollama... (Model: %s)", model)
