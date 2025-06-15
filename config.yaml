@@ -16,7 +16,7 @@ prompts:
       $text
       **Entrega solo el texto correcto, siempre en el mismo idioma. Si hay palabras en otro idioma, mantenlas sin modificarlas. Entrega solo el texto sin indicaciones adicionales, no agregues detalles.
       Corrige los errores de tipeo por las palabras correctas. Corrige las palabras mal escritas, o donde una letras está en lugar de otra por error de tipografico.
-      Asegurate de que el texto que estes entregando, tenga sentido.
+      Corrige usando el contexto del texto que estes entregando para que tenga sentido.
       **
 
   mejorar_texto:

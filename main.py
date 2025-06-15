@@ -3,22 +3,22 @@ ClipAssistant: Utilidad para delegar tareas simples a LLMs locales
 mediante atajos de teclado y el portapapeles.
 """
 
-import re
-import io
-import time
 import base64
+import io
 import logging
+import re
+import time
 from string import Template
-from typing import Optional, Dict, Any, Set
+from typing import Any, Dict, Optional, Set
 
-import yaml
-from pynput.keyboard import Key, KeyCode, Controller, Listener
-import pyperclip
-from PIL import ImageGrab, Image
 import ollama
+import pyperclip
+import yaml
+from PIL import Image, ImageGrab
+from pynput.keyboard import Controller, Key, KeyCode, Listener
 
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(module)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
+
 
 class ClipAssistant:
     """
@@ -28,7 +28,7 @@ class ClipAssistant:
     y la escucha de atajos de teclado para ejecutar acciones predefinidas.
     """
 
-    def __init__(self, config_path: str = 'config.yaml'):
+    def __init__(self, config_path: str = "config.yaml"):
         """
         Inicializa ClipAssistant.
 
@@ -42,12 +42,12 @@ class ClipAssistant:
             exit(1)
 
         self.controller = Controller()
-        self.text_model = self.config['ollama']['text_model']
-        self.vision_model = self.config['ollama']['vision_model']
+        self.text_model = self.config["ollama"]["text_model"]
+        self.vision_model = self.config["ollama"]["vision_model"]
         self.ollama_options = {
-            "keep_alive": self.config['ollama']['keep_alive'],
-            "stream": self.config['ollama']['stream'],
-            "temperature": 0.1
+            "keep_alive": self.config["ollama"]["keep_alive"],
+            "stream": self.config["ollama"]["stream"],
+            "temperature": 0.1,
         }
 
         # Pre-compilar las plantillas para eficiencia
@@ -56,8 +56,7 @@ class ClipAssistant:
 
         self.current_keys: Set[Key | KeyCode | None] = set()
 
-        self.clipboard_delay = self.config.get('app', {}).get('clipboard_delay', 0.2)
-
+        self.clipboard_delay = self.config.get("app", {}).get("clipboard_delay", 0.2)
 
     def _load_config(self, file_path: str) -> Optional[Dict[str, Any]]:
         """
@@ -70,10 +69,10 @@ class ClipAssistant:
             Optional[Dict[str, Any]]: Diccionario de configuración o None si ocurre un error.
         """
         try:
-            with open(file_path, 'r', encoding='utf-8') as file:
+            with open(file_path, encoding="utf-8") as file:
                 config_data = yaml.safe_load(file)
                 # Validación básica de la estructura esperada
-                if not all(k in config_data for k in ['ollama', 'prompts']):
+                if not all(k in config_data for k in ["ollama", "prompts"]):
                     logging.error("Archivo de configuración incompleto. Faltan secciones 'ollama' o 'prompts'.")
                     return None
                 logging.info("Configuración cargada exitosamente desde %s", file_path)
@@ -90,7 +89,7 @@ class ClipAssistant:
 
     def _initialize_prompts(self) -> Dict[str, Template]:
         """Prepara las plantillas de prompt desde la configuración."""
-        return {k: Template(v['template']) for k, v in self.config['prompts'].items()}
+        return {k: Template(v["template"]) for k, v in self.config["prompts"].items()}
 
     def _initialize_actions(self) -> Dict[KeyCode, str]:
         """
@@ -100,8 +99,8 @@ class ClipAssistant:
             Dict[KeyCode, str]: Diccionario que mapea objetos KeyCode a identificadores de acción.
         """
         actions_map = {}
-        for action_name, details in self.config['prompts'].items():
-            shortcut = details.get('shortcut')
+        for action_name, details in self.config["prompts"].items():
+            shortcut = details.get("shortcut")
             if shortcut:
                 try:
                     # Usamos KeyCode.from_char para manejar caracteres simples
@@ -111,8 +110,9 @@ class ClipAssistant:
                     # TODO
                     # Manejar casos donde el atajo no sea un caracter simple (ej. teclas especiales)
                     # Esto requeriría una lógica más compleja si se necesitan teclas como F1, etc.
-                    logging.warning("Atajo '%s' para la acción '%s' no es un caracter simple y será ignorado.",
-                                    shortcut, action_name)
+                    logging.warning(
+                        "Atajo '%s' para la acción '%s' no es un caracter simple y será ignorado.", shortcut, action_name
+                    )
             else:
                 logging.warning("La acción '%s' no tiene un 'shortcut' definido.", action_name)
         return actions_map
@@ -135,14 +135,13 @@ class ClipAssistant:
             return code_block_match.group(1).strip()
         else:
             # Esto es heurístico y puede necesitar ajustes.
-            lines = response_text.strip().split('\n')
+            lines = response_text.strip().split("\n")
             if len(lines) > 2 and lines[0].lower().startswith(("here is", "here's", "el código")):
                 lines = lines[1:]
             if lines and lines[-1].lower().startswith(("note:", "remember", "este código")):
                 lines = lines[:-1]
             # Devuelve el texto potencialmente limpiado o el original si no se aplicó heurística
-            return '\n'.join(lines).strip()
-
+            return "\n".join(lines).strip()
 
     def _call_ollama(self, model: str, prompt: str, images: Optional[list[str]] = None) -> Optional[str]:
         """
@@ -160,12 +159,9 @@ class ClipAssistant:
             logging.info("Enviando solicitud a Ollama (Modelo: %s)", model)
             logging.debug("Prompt: %s", prompt)
             response = ollama.generate(
-                model=model,
-                prompt=prompt,
-                images=images if images else [],
-                options=self.ollama_options
+                model=model, prompt=prompt, images=images if images else [], options=self.ollama_options
             )
-            result = response.get('response')
+            result = response.get("response")
             if result:
                 stripped_result = result.strip()
                 if stripped_result:
@@ -198,7 +194,7 @@ class ClipAssistant:
         try:
             # Simula Ctrl+C para asegurar que el contenido seleccionado esté en el portapapeles
             with self.controller.pressed(Key.ctrl):
-                self.controller.tap('c')
+                self.controller.tap("c")
             time.sleep(self.clipboard_delay)
 
             if content_type == "text":
@@ -216,10 +212,12 @@ class ClipAssistant:
                     image = ImageGrab.grabclipboard()
 
                     if isinstance(image, Image.Image):
-                        img_format = getattr(image, 'format', 'N/A')
-                        img_mode = getattr(image, 'mode', 'N/A')
-                        img_size = getattr(image, 'size', 'N/A')
-                        logging.info(f"Imagen detectada en portapapeles. Info PIL: Formato={img_format}, Modo={img_mode}, Tamaño={img_size}")
+                        img_format = getattr(image, "format", "N/A")
+                        img_mode = getattr(image, "mode", "N/A")
+                        img_size = getattr(image, "size", "N/A")
+                        logging.info(
+                            f"Imagen detectada en portapapeles. Info PIL: Formato={img_format}, Modo={img_mode}, Tamaño={img_size}"
+                        )
 
                         buffer = io.BytesIO()
                         image.save(buffer, format="PNG")
@@ -227,16 +225,24 @@ class ClipAssistant:
                         return buffer.getvalue()
 
                     elif image is not None:
-                        logging.warning(f"Contenido del portapapeles no es un objeto PIL Image reconocido. Tipo recibido: {type(image)}")
+                        logging.warning(
+                            f"Contenido del portapapeles no es un objeto PIL Image reconocido. Tipo recibido: {type(image)}"
+                        )
                         return None
                     else:
-                        logging.warning("No se encontró una imagen en el portapapeles (ImageGrab.grabclipboard() devolvió None).")
+                        logging.warning(
+                            "No se encontró una imagen en el portapapeles (ImageGrab.grabclipboard() devolvió None)."
+                        )
                         return None
 
                 except (OSError, ValueError, TypeError, SyntaxError) as e:
                     # Este bloque captura errores tanto de ImageGrab como de image.save
                     # Loguear detalles de la imagen si se llegó a obtener el objeto
-                    details = f"Info PIL: Formato={getattr(image, 'format', 'N/A')}, Modo={getattr(image, 'mode', 'N/A')}" if image else "No se pudo obtener objeto Image."
+                    details = (
+                        f"Info PIL: Formato={getattr(image, 'format', 'N/A')}, Modo={getattr(image, 'mode', 'N/A')}"
+                        if image
+                        else "No se pudo obtener objeto Image."
+                    )
                     logging.error(f"Error al obtener o procesar la imagen del portapapeles: {e}. {details}", exc_info=True)
                     return None
             else:
@@ -250,6 +256,7 @@ class ClipAssistant:
         # except Exception as e:
         #    logging.error("Error inesperado al acceder al portapapeles: %s", e, exc_info=True)
         #    return None
+
     def _set_clipboard_text(self, text: str) -> bool:
         """
         Coloca texto en el portapapeles y simula Ctrl+V.
@@ -266,7 +273,7 @@ class ClipAssistant:
             # Pausa antes de pegar para asegurar que el portapapeles se actualizó
             time.sleep(self.clipboard_delay / 2)
             with self.controller.pressed(Key.ctrl):
-                self.controller.tap('v')
+                self.controller.tap("v")
             logging.info("Texto pegado simulando Ctrl+V.")
             return True
         except pyperclip.PyperclipException as e:
@@ -301,7 +308,7 @@ class ClipAssistant:
             return
 
         # Limpiar si es una acción de código Python
-        if 'python' in action:
+        if "python" in action:
             processed_text = self._clean_code_snippet(processed_text)
 
         self._set_clipboard_text(processed_text)
@@ -345,29 +352,28 @@ class ClipAssistant:
 
         if key in self.actions and modifier_pressed:
             action = self.actions[key]
-            action_config = self.config['prompts'][action]
-            action_type = action_config.get('type', 'text') # Default a 'text'
+            action_config = self.config["prompts"][action]
+            action_type = action_config.get("type", "text")  # Default a 'text'
 
             logging.info("Atajo detectado para acción: '%s' (Tipo: %s)", action, action_type)
 
             # TODO: Mejorar el manejo de parámetros dinámicos (ej. idioma, tono)
             #       Actualmente están hardcodeados aquí abajo. Podrían venir de la config
             #       o de una mini-GUI.
-            if action_type == 'vision':
+            if action_type == "vision":
                 # self._process_image_action(action)
                 # TODO
                 logging.info("La funcionalidad de procesamiento de imágenes está temporalmente deshabilitada.")
 
-            elif action_type == 'text':
-                if action == 'traducir_texto':
+            elif action_type == "text":
+                if action == "traducir_texto":
                     self._process_text_action(action, idioma="inglés")
-                elif action == 'cambiar_tono':
+                elif action == "cambiar_tono":
                     self._process_text_action(action, tono="formal")
                 else:
                     self._process_text_action(action)
             else:
                 logging.warning("Tipo de acción '%s' no reconocido para '%s'.", action_type, action)
-
 
     def _on_release(self, key: Key | KeyCode | None) -> None:
         """
