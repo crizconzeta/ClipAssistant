@@ -2,7 +2,8 @@
 
 ## Un asistente liviano que vive en tu consola y te ayuda con el texto del portapapeles usando IA local
 
-[![Demostración en Youtube](https://img.youtube.com/vi/GwYn5_h9_do/0.jpg)](https://youtu.be/GwYn5_h9_do?feature=shared)
+### Mirror en Codeberg
+https://codeberg.org/KairosDigital/ClipAssistant
 
 ---
 
