@@ -5,6 +5,20 @@
 ### Mirror en Codeberg
 https://codeberg.org/KairosDigital/ClipAssistant
 
+
+### Funcionamiento
+
+**Corrección de Texto**
+![Demo](assets/demo_clip_assistant.gif)
+
+También podemos entretenernos, respondiendo al estilo de _Werner Herzog_
+
+**Al estilo de Werner Herzog**
+
+
+![Werner Herzog Style](assets/demo_werner.gif)
+
+
 ---
 
 ## Why?
@@ -18,8 +32,6 @@ Vivimos en un mundo de constante comunicación escrita. Para algunos, esto prese
 - **Simple y Efectiva:** Que se enfoque en tareas comunes de manipulación de texto para reducir la carga cognitiva y agilizar el flujo de trabajo.
 
 ## How?
-
-Aprovechando conocimientos de programación en Python y la flexibilidad de los modelos de lenguaje grandes (LLMs) locales, ClipAssistant:
 
 1. **Escucha atajos de teclado** globales definidos por el usuario.
 2. **Interactúa con el portapapeles** del sistema para copiar el texto seleccionado.
@@ -72,7 +84,7 @@ Aprovechando conocimientos de programación en Python y la flexibilidad de los m
 
 4. **Crea y Activa un Entorno Virtual:**
 
-Sigue la sisntruccion de UV para crear un entorno virtual.
+Sigue las instrucciones de UV para crear un entorno virtual.
 
 ```bash
 uv venv
@@ -127,4 +139,3 @@ Las contribuciones son bienvenidas. Por favor, abre un _issue_ para discutir cam
 ---
 
 _Esta documentación fue parcialmente escrita y refinada con la ayuda de ClipAssistant._
-
