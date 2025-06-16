@@ -1,3 +1,5 @@
+[![Check](https://github.com/crizconzeta/ClipAssistant/actions/workflows/check.yml/badge.svg?branch=main)](https://github.com/crizconzeta/ClipAssistant/actions/workflows/check.yml)
+
 # ClipAssistant
 
 ## Un asistente liviano que vive en tu consola y te ayuda con el texto del portapapeles usando IA local
