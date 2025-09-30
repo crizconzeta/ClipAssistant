@@ -47,7 +47,7 @@ class ClipAssistant:
 
     def _get_clipboard_image(self) -> bytes | None:
         """A more desperate, multi-pronged attempt to grab an image from the clipboard"""
-        # Method 1: The direct approach with Pillow.
+        # 1. The direct approach with Pillow
         try:
             img = ImageGrab.grabclipboard()
             if isinstance(img, Image.Image):
@@ -58,7 +58,7 @@ class ClipAssistant:
         except Exception as e:
             logging.warning("ImageGrab failed, as it often does on Linux. Reason: %s", e)
 
-        # Method 2: The textual approach. Maybe it's a path or a URL.
+        # 2. The textual approach. it's a path or a URL
         try:
             raw_content = pyperclip.paste()
             logging.debug("Raw clipboard content for image search: %s", repr(raw_content))

@@ -1,9 +1,7 @@
 ollama:
   endpoint: "http://localhost:11434/api/"
-  # text_model: "qwen2:1.5b"
-  text_model: "llama3.2:3b"
-  vision_model: "moondream:latest"
-  # la funcionalidad de vision está desactivada por el momento
+  text_model: "gemma3:4b"
+  vision_model: "gemma3:4b"
   keep_alive: "13m"
   stream: false
 
@@ -107,8 +105,8 @@ prompts:
     shortcut: "i"
     type: "vision"
     template: |
-      You are an expert image analyst. Look at the following image carefully and provide a concise but detailed description of what you see.
-      Describe the main subject, the setting, any text present, and the overall style or mood of the image.
-
+      Eres un experto en análisis de imágenes. Mira cuidadosamente esta imagen, es concisa, pero detallada en la descripción de lo que ves.
+      Describe al protagonista, el lugar, el texto, si es que hay texto presente, y el estilo o la vibra de la imagen.
+      **Retorna solo lo solicitado, no hagas más preguntas.**
 app:
   clipboard_delay: 0.25

@@ -120,7 +120,7 @@ Antes de ejecutar, necesitas configurar `ClipAssistant`:
 4. **Ejecuta el script:**
 
    ```bash
-   python main.py
+   python -m src.clip_assistant.main
    ```
 
    Verás un mensaje indicando que está escuchando atajos. La terminal permanecerá ocupada por el script.

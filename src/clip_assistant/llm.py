@@ -10,12 +10,13 @@ def call_ollama(
     config: OllamaConfig,
     images: list[str] | None = None,
 ) -> str | None:
-    """Sends this poor soul's request into the digital void (Ollama)"""
+    """Sends this poor soul's request into the digital void"""
     model = config.vision_model if images else config.text_model
     logging.info("Contacting the ollama... (Model: %s)", model)
 
     try:
-        # The options are a pact with the machine. Let's hope it honors it
+        # The options are a pact with the machine
+        # Let's hope it honors it
         response = ollama.generate(
             model=model,
             prompt=prompt,
@@ -23,7 +24,8 @@ def call_ollama(
             options={
                 "keep_alive": config.keep_alive,
                 "stream": config.stream,
-                "temperature": 0.1,  # I Love avant-garde movies, but llms responses has to be deterministic, not avant-garde.
+                "temperature": 0.1,
+                # I Love avant-garde movies, but llms responses has to be deterministic, not avant-garde
             },
         )
         result = response.get("response", "").strip()
@@ -33,7 +35,6 @@ def call_ollama(
             logging.warning("Ollama returned an empty void. Deep")
             return None
 
-        logging.info("The oracle has spoken")
         return result
 
     except ollama.ResponseError as e:
